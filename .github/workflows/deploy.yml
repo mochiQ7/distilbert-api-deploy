@@ -1,0 +1,33 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: twt-project-456309
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Build Docker image
+        run: |
+          gcloud builds submit --tag asia-northeast1-docker.pkg.dev/twt-project-456309/docker-repo/distilbert-api
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy distilbert-api \
+            --image asia-northeast1-docker.pkg.dev/twt-project-456309/docker-repo/distilbert-api \
+            --platform managed \
+            --region asia-northeast1 \
+            --allow-unauthenticated
