@@ -17,7 +17,7 @@ jobs:
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: twt-project-456309
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          service_account_key: ${{secrets.GCP_SA_KEY}}
           export_default_credentials: true
 
       - name: Build Docker image
