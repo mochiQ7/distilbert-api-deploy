@@ -1,7 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from transformers import DistilBertTokenizer, DistilBertForSequenceClassification
+from transformers import DistilBertForSequenceClassification
 import torch
+import torch.serialization
 import logging
 from google.cloud import storage
 import os
@@ -26,6 +27,7 @@ def download_model_from_gcs():
 download_model_from_gcs()  # 起動時にダウンロード
 
 # モデルとトークナイザの読み込み
+torch.serialization.add_safe_globals([DistilBertForSequenceClassification])
 tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
 model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
 model = torch.load("model/distilbert_model_full.pth", map_location=torch.device("cpu"), weights_only=False)
