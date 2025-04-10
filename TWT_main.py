@@ -28,9 +28,9 @@ tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
 model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased", num_labels=2)
 
 # state_dictの読み込み
-model.load_state_dict(torch.load("model/distilbert_model_v3.pth", map_location=torch.device("cpu")))
+state_dict = torch.load("model/distilbert_model_v3.pth", map_location=torch.device("cpu"), weights_only=False)
+model.load_state_dict(state_dict)
 model.eval()
-
 
 # ログの設定
 logging.basicConfig(
