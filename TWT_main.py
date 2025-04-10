@@ -10,16 +10,21 @@ import requests
 
 # Cloud Storageからモデルをダウンロード
 def download_model_from_gcs():
-    model_url = "https://storage.cloud.google.com/twt-model-bucket/distilbert_model_v3.pth"
+    model_url = "https://storage.googleapis.com/twt-model-bucket/distilbert_model_v3.pth"
     destination_file_name = "model/distilbert_model_v3.pth"
 
     if not os.path.exists(destination_file_name):
         os.makedirs("model", exist_ok=True)
         print("GCSからモデルをダウンロード中")
         response = requests.get(model_url)
-        with open(destination_file_name, "wb") as f:
-            f.write(response.content)
-        print("モデルを保存しました")
+        if response.status_code == 200:
+            with open(destination_file_name, "wb") as f:
+                f.write(response.content)
+            print("モデルを保存しました")
+        else:
+            print(f"モデルのダウンロードに失敗しました（status={response.status_code}）")
+            raise Exception("モデルのダウンロード失敗！URLや権限を確認してね")
+
 
 download_model_from_gcs()  # 起動時にダウンロード
 
