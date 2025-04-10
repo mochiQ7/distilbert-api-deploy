@@ -28,7 +28,7 @@ download_model_from_gcs()  # 起動時にダウンロード
 # モデルとトークナイザの読み込み
 tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
 model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
-model = torch.load("model/distilbert_model_full.pth", map_location=torch.device("cpu"))
+model = torch.load("model/distilbert_model_full.pth", map_location=torch.device("cpu"), weights_only=False)
 model.eval()
 
 # ログの設定
@@ -71,4 +71,5 @@ def predict(tweet: TWTRequest):
 # ローカルでの起動用
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+    port = int(os.environ.get("PORT", 8080))
+    uvicorn.run(app, host="0.0.0.0", port=port)
