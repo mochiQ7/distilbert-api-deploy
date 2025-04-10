@@ -7,4 +7,9 @@ __pycache__/
 .venv/
 .env
 .ipynb_checkpoints/
+<<<<<<< HEAD
 *.json
+=======
+model/
+*.json
+>>>>>>> 5dce15c68f62874b9cc8452b75ed00834d2227a4
