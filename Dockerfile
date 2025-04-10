@@ -11,6 +11,8 @@ COPY model ./model
 
 # 依存パッケージをインストール
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir google-cloud-storage
+
 
 # ポート解放（Cloud Runでも使えるように）
 EXPOSE 8080

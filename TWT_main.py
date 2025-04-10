@@ -3,43 +3,56 @@ from pydantic import BaseModel
 from transformers import DistilBertTokenizer, DistilBertForSequenceClassification
 import torch
 import logging
-from google.cloud import logging as gcloud_logging
+from google.cloud import storage
+import os
+from dotenv import load_dotenv
+import requests
 
+# .env読み込み
+load_dotenv()
 
-# model, tokenizer読み込み
+# Cloud Storageからモデルをダウンロード
+def download_model_from_gcs():
+    model_url = os.getenv("MODEL_URL")
+    destination_file_name = "model/distilbert_model_full.pth"
+
+    if not os.path.exists(destination_file_name):
+        os.makedirs("model", exist_ok=True)
+        print("GCSからモデルをダウンロード中")
+        response = requests.get(model_url)
+        with open(destination_file_name, "wb") as f:
+            f.write(response.content)
+        print("モデルを保存しました")
+
+download_model_from_gcs()  # 起動時にダウンロード
+
+# モデルとトークナイザの読み込み
 tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
 model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
-model = torch.load("model/distilbert_model_full.pth", map_location=torch.device("cpu"), weights_only=False)
+model = torch.load("model/distilbert_model_full.pth", map_location=torch.device("cpu"))
 model.eval()
-
-# GoogleCloudLogging
-#client = gcloud_logging.Client()
-#client.setup_logging()
 
 # ログの設定
 logging.basicConfig(
-    level = logging.INFO,
-    format = "%(asctime)s - %(levelname)s - %(message)s",
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
-# FastAPIのインスタンスを生成
+# FastAPIアプリの生成
 app = FastAPI()
 
-# 入力用のデータモデル定義
+# 入力データの型定義
 class TWTRequest(BaseModel):
     text: str
 
-# 予測用のAPIエンドポイント
+# 予測エンドポイント
 @app.post("/predict")
 def predict(tweet: TWTRequest):
     try:
-        # ログにリクエストを記録
         logging.info(f"予測リクエスト受信: {tweet.text}")
 
-        # テキストをトークナイズ
         inputs = tokenizer(tweet.text, return_tensors="pt", truncation=True, padding=True, max_length=128)
 
-        # 推論実行
         with torch.no_grad():
             outputs = model(**inputs)
             probs = torch.softmax(outputs.logits, dim=1)
@@ -56,6 +69,7 @@ def predict(tweet: TWTRequest):
         logging.error(f"予測エラー: {str(e)}")
         raise HTTPException(status_code=500, detail="Prediction failed.")
 
+# ローカルでの起動用
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8080)
