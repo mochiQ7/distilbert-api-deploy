@@ -6,9 +6,7 @@ import torch.serialization
 import logging
 from google.cloud import storage
 import os
-from dotenv import load_dotenv
 import requests
-
 
 # Cloud Storageからモデルをダウンロード
 def download_model_from_gcs():
@@ -23,15 +21,14 @@ def download_model_from_gcs():
             f.write(response.content)
         print("モデルを保存しました")
 
-
 download_model_from_gcs()  # 起動時にダウンロード
 
 # モデルとトークナイザの読み込み
 torch.serialization.add_safe_globals([DistilBertForSequenceClassification])
 tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
-model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased")
 model = torch.load("model/distilbert_model_full.pth", map_location=torch.device("cpu"), weights_only=False)
 model.eval()
+
 
 # ログの設定
 logging.basicConfig(
