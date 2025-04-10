@@ -10,8 +10,8 @@ import requests
 
 # Cloud Storageからモデルをダウンロード
 def download_model_from_gcs():
-    model_url = "https://storage.googleapis.com/twt-model-bucket/distilbert_model_v2.pth"
-    destination_file_name = "model/distilbert_model_v2.pth"
+    model_url = "https://storage.googleapis.com/twt-model-bucket/distilbert_model_v3.pth"
+    destination_file_name = "model/distilbert_model_v3.pth"
 
     if not os.path.exists(destination_file_name):
         os.makedirs("model", exist_ok=True)
@@ -24,9 +24,11 @@ def download_model_from_gcs():
 download_model_from_gcs()  # 起動時にダウンロード
 
 # モデルとトークナイザの読み込み
-torch.serialization.add_safe_globals([DistilBertForSequenceClassification])
 tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
-model = torch.load("model/distilbert_model_v2.pth", map_location=torch.device("cpu"), weights_only=False)
+model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased", num_labels=2)
+
+# state_dictの読み込み
+model.load_state_dict(torch.load("model/distilbert_model_v3.pth", map_location=torch.device("cpu")))
 model.eval()
 
 
