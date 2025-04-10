@@ -10,7 +10,7 @@ import requests
 
 # Cloud Storageからモデルをダウンロード
 def download_model_from_gcs():
-    model_url = "https://storage.googleapis.com/twt-model-bucket/distilbert_model_v3.pth"
+    model_url = "https://storage.cloud.google.com/twt-model-bucket/distilbert_model_v3.pth"
     destination_file_name = "model/distilbert_model_v3.pth"
 
     if not os.path.exists(destination_file_name):
