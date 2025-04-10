@@ -8,12 +8,10 @@ import os
 from dotenv import load_dotenv
 import requests
 
-# .env読み込み
-load_dotenv()
 
 # Cloud Storageからモデルをダウンロード
 def download_model_from_gcs():
-    model_url = os.getenv("MODEL_URL")
+    model_url = "https://storage.googleapis.com/twt-model-bucket/distilbert_model_full.pth"
     destination_file_name = "model/distilbert_model_full.pth"
 
     if not os.path.exists(destination_file_name):
@@ -23,6 +21,7 @@ def download_model_from_gcs():
         with open(destination_file_name, "wb") as f:
             f.write(response.content)
         print("モデルを保存しました")
+
 
 download_model_from_gcs()  # 起動時にダウンロード
 
