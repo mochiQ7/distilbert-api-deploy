@@ -7,7 +7,6 @@ WORKDIR /app
 # 必要ファイルをコピー（venv除く）
 COPY requirements.txt .
 COPY TWT_main.py .
-COPY model ./model
 
 # 依存パッケージをインストール
 RUN pip install --no-cache-dir -r requirements.txt
