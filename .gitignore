@@ -7,9 +7,9 @@ __pycache__/
 .venv/
 .env
 .ipynb_checkpoints/
-<<<<<<< HEAD
+
+# 全体で .json 無視するけど、model内は例外にする
 *.json
-=======
-model/
-*.json
->>>>>>> 5dce15c68f62874b9cc8452b75ed00834d2227a4
+!model/
+!model/*.json
+!model/*.pth
