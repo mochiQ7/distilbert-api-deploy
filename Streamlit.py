@@ -1,6 +1,9 @@
 import streamlit as st
 import torch
 from transformers import DistilBertTokenizer, DistilBertForSequenceClassification
+import os
+import requests
+from dotenv import load_dotenv
 
 # 背景色＋ボタン色のCSSカスタマイズ
 st.markdown(
@@ -18,6 +21,21 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
+load_dotenv()
+MODEL_URL = os.getenv("MODEL_URL")
+MODEL_PATH = "model/distilbert_model_v3.pth"
+
+def download_model():
+    if not os.path.exists(MODEL_PATH):
+        print("モデルをダウンロード中...")
+        os.makedirs("model", exist_ok=True)
+        response = requests.get(MODEL_URL)
+        with open(MODEL_PATH, "wb") as f:
+            f.write(response.content)
+        print("モデルダウンロード完了！")
+
+download_model()
 
 # モデルとトークナイザの読み込み
 @st.cache_resource
