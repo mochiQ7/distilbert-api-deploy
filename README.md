@@ -4,7 +4,7 @@ FastAPIで作成した災害ツイートを判定するAPIを Cloud Run にデ�
 
 
 災害関連ツイートを判定するAIアプリ  
-→ [🌐 アプリはこちら](https://distilbert-api-deploy-cztkh7p8qtj8tgbvm4szuv.streamlit.app/)
+→ [🌐 アプリを試す](https://distilbert-api-deploy-cztkh7p8qtj8tgbvm4szuv.streamlit.app/)
 
 ## 🔧 構成
 - モデル：DistilBERT (Hugging Face Transformers)
