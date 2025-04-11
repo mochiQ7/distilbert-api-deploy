@@ -52,7 +52,7 @@ tokenizer, model = load_model()
 st.markdown("<h1 style='text-align: center;'>🌪️ 災害ツイート判定アプリ ✨</h1>", unsafe_allow_html=True)
 st.markdown("このツールは、ツイートが災害に関係あるかどうかをAIが予測します 💡<br>たった1行で、緊急性を見抜く！😼", unsafe_allow_html=True)
 
-tweet = st.text_area("😼ツイートを入力してね:")
+tweet = st.text_area("😼ツイートを入力してね（English only):")
 
 if st.button("判定する！"):
     if tweet.strip() == "":
